@@ -1,0 +1,22 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "tikzdraw_vert178"
+version = "0.0.1"
+authors = [
+  { name="Darin Chau", email="darinchauyf@gmail.com" },
+]
+description = "A tikz plots generator"
+readme = "README.md"
+requires-python = ">=3.10"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/vert178/tikzdraw.git"
+"Bug Tracker" = "https://github.com/vert178/tikzdraw/issues"

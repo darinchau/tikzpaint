@@ -18,5 +18,5 @@ classifiers = [
 ]
 
 [project.urls]
-"Homepage" = "https://github.com/vert178/tikzdraw.git"
-"Bug Tracker" = "https://github.com/vert178/tikzdraw/issues"
+"Homepage" = "https://github.com/vert178/tikzpaint"
+"Bug Tracker" = "https://github.com/vert178/tikzpaint/issues"

@@ -8,31 +8,33 @@ from drawable import Drawable, Displayable
 
 class Projection(ABC):
     """Projection function object useful for defining projections of coordinates"""
-    def __init__(self, *args: Callable):
-        self.input_dims = num_parameters(args[0])
-        self.result_dims = len(args)
-        self.fns = list(args)
+    def __init__(self, *args: list[int]):
+        self.matrix = np.array(args)
+        self.input_dims = self.matrix.shape[1]
+        self.result_dims = self.matrix.shape[0]
     
-    def __call__(self, t: tuple):
-        res = (self.fns[i](*t) for i in range(self.result_dims))
-        return tuple(res)
+    def __call__(self, t: tuple) -> tuple:
+        v = np.array(t)
+        if v.shape[0] != self.input_dims:
+            raise ValueError(f"The length of t is expected to be {self.input_dims}, got {v.shape} instead")
+        v = self.matrix @ v
+        return tuple(v)
 
 class Figure:
-    """This helps me draw tikz stuff"""
+    """Figures stores all the thinks you are about to draw
+    Available kwargs:
+        - projection: A Projection functions object that defines a linear transformation from Rn to R2"""
     def __init__(self, ndims: int = 2) -> None:
-        self.toDraw : list[Displayable | Drawable] = []
+        self.toDraw : list[Drawable] = []
         self.ndims : int = ndims
     
-    ## TODO make generation of lines and stuff dynamic with type check
     # output is true, then print, otherwise return the whole thing as a string
-    # Bounds defines the bounding n-cube for the drawing
     def tikzify(self, output: bool = True, indentation: int = 4, **kwargs) -> str:
-        """Output the tikz code"""   
+        """Output the tikz code"""
 
         st = "\\begin{tikzpicture}[scale=0.7]\n"
         for d in self._preprocess(kwargs):
-            options = ", ".join(self.options + d.options)
-            st += " " * indentation + d.tikzify(options) + "\n"
+            st += " " * indentation + d.tikzify() + "\n"
         st += "\\end{tikzpicture}"
 
         # Print the whole thing if needed
@@ -54,12 +56,9 @@ class Figure:
         return
     
 
-    def draw(self, d: Drawable | Displayable) -> None:
+    def draw(self, d: Drawable) -> None:
         """Add something to draw in tikz code"""
-        if isinstance(d, Drawable) or isinstance(d, Displayable):
-            self.toDraw.append(d)
-        else:
-            raise TypeError(f"{d} is not a drawable or displayable object")
+        self.toDraw.append(d)
     
     @property
     def options(self):
@@ -70,11 +69,8 @@ class Figure:
     # Naively loop through all displayables in self.todraw, without checking
     def _iter_raw(self):
         for d in self.toDraw:
-            if isinstance(d, Displayable):
-                yield copy(d)
-            elif isinstance(d, Drawable):
-                for dis in d.draw():
-                    yield copy(dis)
+            for dis in d.draw():
+                yield copy(dis)
     
     def _preprocess(self, kwargs: dict[str, Any]):
         for d in self._iter_raw():

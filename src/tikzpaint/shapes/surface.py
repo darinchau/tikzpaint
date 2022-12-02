@@ -3,8 +3,8 @@ import matplotlib.pyplot as plt
 from abc import abstractmethod as virtual
 from tikzpaint.util import copy, isZero, num_parameters
 from tikzpaint.figures import Drawable, Displayable
-from line import Line
-from path import Path
+from displayable.line import L0Line
+from displayable.path import L0Path
 
 class ParametricSurface(Drawable):
     """Implementation of an n-dimensional surface (n-1 manifold) drawn on a figure
@@ -31,13 +31,14 @@ class ParametricSurface(Drawable):
     
     @virtual
     def get_num_params(self) -> int:
+        """Returns the number of parameters from the surface. Aka this number is the n in n-manifold"""
         pass
 
     @virtual
     def gen_path(self, f: Callable) -> Generator[Displayable, None, None]:
         pass
     
-    def draw(self):
+    def draw(self) -> Generator[Displayable, None, None]:
         for d in self.gen_path(self.f):
             yield d
 
@@ -51,7 +52,7 @@ class Surface1D(ParametricSurface):
     def gen_path(self, f) -> Generator[Displayable, None, None]:
         it = self.ranges[0]
         coords = [f(it[i]) for i in range(len(it) - 1)]
-        yield Path(coords)
+        yield L0Path(coords)
     
 
 class Surface2D(ParametricSurface):
@@ -65,8 +66,8 @@ class Surface2D(ParametricSurface):
         it1, it2 = self.ranges
         for i in range(len(it1) - 1):
             for j in range(len(it2) - 1):
-                yield Line(f(it1[i], it2[j]), f(it1[i + 1], it2[j]))
-                yield Line(f(it1[i], it2[j]), f(it1[i], it2[j + 1]))
+                yield L0Line(f(it1[i], it2[j]), f(it1[i + 1], it2[j]))
+                yield L0Line(f(it1[i], it2[j]), f(it1[i], it2[j + 1]))
 
 class Surface3D(ParametricSurface):
     """An implementation of the 3 manifold
@@ -86,6 +87,6 @@ class Surface3D(ParametricSurface):
                     lub = f(it1[i], it2[j + 1], it3[k])
                     rlb = f(it1[i + 1], it2[j], it3[k])
 
-                    yield Line(llb, rlb)
-                    yield Line(llb, lub)
-                    yield Line(llb, llf)
+                    yield L0Line(llb, rlb)
+                    yield L0Line(llb, lub)
+                    yield L0Line(llb, llf)

@@ -2,10 +2,9 @@ from __future__ import annotations
 import numpy as np
 from abc import ABC, abstractmethod as virtual
 from tikzpaint.util import copy, isZero, Fraction, DECIMALS
-from tikzpaint.figures import Drawable
-from arrow import Arrow
-from collections.abc import Iterable
-from typing import TypeVar, Generic
+from tikzpaint.figures import Drawable, Displayable
+from displayable.arrow import L0Arrow
+from typing import TypeVar, Generic, Generator
 from math import gcd
 
 _SupportArithmetic = TypeVar("_SupportArithmetic", int, Fraction, float)
@@ -15,10 +14,10 @@ class Vector(Drawable, Generic[_SupportArithmetic]):
     def __init__(self, coords: tuple[_SupportArithmetic, ...] | Vector[_SupportArithmetic] | list[_SupportArithmetic]):
         self.__v = tuple(coords)
 
-    def draw(self):
+    def draw(self) -> Generator[Displayable, None, None]:
         coords = self.__v
         origin = tuple([0] * len(coords))
-        yield Arrow(origin, coords)
+        yield L0Arrow(origin, coords)
         return
     
     def __getitem__(self, idx):

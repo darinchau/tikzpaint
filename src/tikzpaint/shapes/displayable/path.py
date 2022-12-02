@@ -1,7 +1,7 @@
 from tikzpaint.figures import Displayable
 import matplotlib.pyplot as plt
 
-class Path(Displayable):
+class L0Path(Displayable):
     """Implementation of a path that could be drawn on a figure"""
     name = "Path"
     def __init__(self, coords: list[tuple]) -> None:
@@ -17,9 +17,9 @@ class Path(Displayable):
             y.append(_y)
         plt.plot(x, y, "-k")
 
-    def tikzify(self, options: str) -> str:
+    def tikzify(self) -> str:
         coords = " -- ".join([str(self.coordinates[i]) for i in range(self.lencoords)])
-        return f"\\draw[{options}] {coords};"
+        return f"\\draw[{self.tikz_options}] {coords};"
     
     def __copy__(self):
-        return Path([self.coordinates[i] for i in range(self.lencoords)])
+        return L0Path([self.coordinates[i] for i in range(self.lencoords)])

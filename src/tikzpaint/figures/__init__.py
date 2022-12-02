@@ -1,4 +1,3 @@
-import os
-import sys
-from drawable import Drawable, Displayable
+from drawable import Drawable
+from displayable import Displayable
 from figure import Figure, Projection

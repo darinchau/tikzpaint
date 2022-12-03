@@ -1,4 +1,4 @@
-from figures.drawable import Drawable
-from figures.displayable import Displayable
-from figures.figure import Figure
-from figures.projection import Projection, LinearProjection, StereographicProjection
+from tikzpaint.figures.drawable import Drawable
+from tikzpaint.figures.displayable import Displayable
+from tikzpaint.figures.figure import Figure
+from tikzpaint.figures.projection import Projection, LinearProjection, StereographicProjection

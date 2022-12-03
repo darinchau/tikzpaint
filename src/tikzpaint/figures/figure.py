@@ -4,11 +4,11 @@ from typing import Callable, Any, Generator
 import matplotlib.pyplot as plt
 from inspect import signature
 
-from tikzpaint.util import copy, DECIMALS, num_parameters
+from util import copy, DECIMALS, num_parameters
 
-from tikzpaint.figures.drawable import Drawable
-from tikzpaint.figures.displayable import Displayable
-from tikzpaint.figures.projection import Projection
+from drawable import Drawable
+from displayable import Displayable
+from projection import Projection
 
 class Figure:
     """Figures stores all the thinks you are about to draw

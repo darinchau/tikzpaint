@@ -1,8 +1,8 @@
 from typing import Generator
 
-from tikzpaint.figures import Drawable, Displayable
+from figures import Drawable, Displayable
 
-from tikzpaint.shapes.displayable.arrow import L0Arrow
+from displayables.arrow import L0Arrow
 
 class Arrow(Drawable):
     """Implementation of an arrow that could be drawn on a figure"""

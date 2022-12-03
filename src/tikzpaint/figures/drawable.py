@@ -2,7 +2,7 @@ from abc import ABC
 from abc import abstractmethod as virtual
 from typing import Generator, Any
 
-from tikzpaint.figures.displayable import Displayable
+from displayable import Displayable
 
 class Drawable(ABC):
     """Base class for any object that could be displayed in the figure. 

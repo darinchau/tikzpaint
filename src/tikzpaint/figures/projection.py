@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 from inspect import signature
 import numpy as np
 
-from tikzpaint.util import copy, NDArray, to_superscript, isZero
+from util import copy, NDArray, to_superscript, isZero
 
 
 class Projection(ABC):

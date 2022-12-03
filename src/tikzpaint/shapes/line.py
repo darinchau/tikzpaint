@@ -1,9 +1,9 @@
 from typing import Generator
 
-from tikzpaint.figures import Drawable, Displayable
+from figures import Drawable, Displayable
 
-from tikzpaint.shapes.vector import Vector
-from tikzpaint.shapes.displayable.path import L0Path
+from vector import Vector
+from displayables.path import L0Path
 
 class Line(Drawable):
     """Implementation of an line that could be drawn on a figure

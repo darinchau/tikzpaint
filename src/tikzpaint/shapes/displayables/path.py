@@ -1,5 +1,6 @@
-from tikzpaint.figures import Displayable
 import matplotlib.pyplot as plt
+
+from figures import Displayable
 
 class L0Path(Displayable):
     """Implementation of a path that could be drawn on a figure"""

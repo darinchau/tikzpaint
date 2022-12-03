@@ -1,5 +1,6 @@
-from tikzpaint.figures import Displayable
 import matplotlib.pyplot as plt
+
+from figures import Displayable
 
 class L0Arrow(Displayable):
     """Implementation of an arrow that could be drawn on a figure. Note: arrows must be straight and they are not

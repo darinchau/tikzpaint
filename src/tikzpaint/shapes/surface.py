@@ -2,10 +2,10 @@ from typing import Callable, Generator, Any
 import matplotlib.pyplot as plt
 from abc import abstractmethod as virtual
 
-from tikzpaint.util import copy, isZero, num_parameters
-from tikzpaint.figures import Drawable, Displayable
+from util import copy, isZero, num_parameters
+from figures import Drawable, Displayable
 
-from tikzpaint.shapes.displayable.path import L0Path
+from displayables.path import L0Path
 
 class ParametricSurface(Drawable):
     """Implementation of an n-dimensional surface (n-1 manifold) drawn on a figure

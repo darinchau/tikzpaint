@@ -5,10 +5,10 @@ from abc import ABC, abstractmethod as virtual
 from typing import TypeVar, Generic, Generator
 from math import gcd
 
-from tikzpaint.util import copy, isZero, Fraction, DECIMALS
-from tikzpaint.figures import Drawable, Displayable
+from util import copy, isZero, Fraction, DECIMALS
+from figures import Drawable, Displayable
 
-from tikzpaint.shapes.displayable.arrow import L0Arrow
+from displayables.arrow import L0Arrow
 
 _SupportArithmetic = TypeVar("_SupportArithmetic", int, Fraction, float)
 class Vector(Drawable, Generic[_SupportArithmetic]):

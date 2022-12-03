@@ -1,4 +1,4 @@
-from figures.drawable import Drawable
-from figures.displayable import Displayable
-from figures.figure import Figure
-from figures.projection import Projection, LinearProjection, StereographicProjection
+from drawable import Drawable
+from displayable import Displayable
+from figure import Figure
+from projection import Projection, LinearProjection, StereographicProjection

@@ -40,7 +40,7 @@ class Displayable(ABC):
 
     @property
     def tikz_options(self) -> str:
-        return ""
+        return ", ".join(self.options)
     
     @virtual
     def __copy__(self):

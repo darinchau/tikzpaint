@@ -4,8 +4,9 @@ from abc import ABC
 from abc import abstractmethod as virtual
 from functools import wraps
 from functools import total_ordering, cache
-from constants import *
 from inspect import signature
+
+from tikzpaint.util.constants import NDArray, EPSILON, STRICT_EPSILON
 
 def isZero(obj: Any, strict: bool = False) -> bool:
     """Returns true if a is not zero, false otherwise. Automatically handles floating point comparison. 
@@ -43,12 +44,16 @@ def isNumber(a: Any):
 _copyable = TypeVar("_copyable")
 def copy(obj: _copyable) -> _copyable:
     """Makes a deep copy via the dunder copy method in a class. If the parameter is a list, returns the recursive deep copy"""
-    if isinstance(obj, int | float):
+    if isinstance(obj, int | float | str):
         return obj
     if isinstance(obj, list):
         return [copy(x) for x in obj] #type: ignore
     if isinstance(obj, tuple):
         return tuple(copy(x) for x in obj) #type: ignore
+    if isinstance(obj, dict):
+        return {copy(k): copy(v) for k, v in obj.items()} #type: ignore
+    if isinstance(obj, np.ndarray):
+        return np.array(obj, dtype = obj.dtype)
     if "__copy__" in dir(obj):
         return obj.__copy__() # type: ignore
     raise TypeError(f"Object of type {type(obj).__name__} is not copyable!")
@@ -57,3 +62,13 @@ def copy(obj: _copyable) -> _copyable:
 def num_parameters(f: Callable):
     """Returns the number of parameters in the callable f"""
     return len(signature(f).parameters)
+
+def to_superscript(a: int):
+    SUPERSCRIPTS = "⁰¹²³⁴⁵⁶⁷⁸⁹"
+    st = "" if a >= 0 else "⁻"
+    return st + "".join([SUPERSCRIPTS[int(i)] for i in str(abs(a))])
+    
+def to_subscript(a: int):
+    SUBSCRIPTS = "₀₁₂₃₄₅₆₇₈₉"
+    st = "" if a >= 0 else "₋"
+    return st + "".join([SUBSCRIPTS[int(i)] for i in str(abs(a))])

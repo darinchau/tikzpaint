@@ -2,7 +2,11 @@ from tikzpaint.figures import Displayable
 import matplotlib.pyplot as plt
 
 class L0Arrow(Displayable):
-    """Implementation of an arrow that could be drawn on a figure"""
+    """Implementation of an arrow that could be drawn on a figure. Note: arrows must be straight and they are not
+    reall compatible with stereographic projections
+    
+    start: coordinates of the start of an arrow
+    end: coordinates of the end of an arrow"""
     name = "Arrow"
     def __init__(self, start: tuple, end: tuple):
         self.coordinates["start"] = start

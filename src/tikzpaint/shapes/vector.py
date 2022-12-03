@@ -1,11 +1,14 @@
 from __future__ import annotations
+
 import numpy as np
 from abc import ABC, abstractmethod as virtual
-from tikzpaint.util import copy, isZero, Fraction, DECIMALS
-from tikzpaint.figures import Drawable, Displayable
-from displayable.arrow import L0Arrow
 from typing import TypeVar, Generic, Generator
 from math import gcd
+
+from tikzpaint.util import copy, isZero, Fraction, DECIMALS
+from tikzpaint.figures import Drawable, Displayable
+
+from tikzpaint.shapes.displayable.arrow import L0Arrow
 
 _SupportArithmetic = TypeVar("_SupportArithmetic", int, Fraction, float)
 class Vector(Drawable, Generic[_SupportArithmetic]):

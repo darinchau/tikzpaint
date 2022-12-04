@@ -1,15 +1,16 @@
 from abc import ABC
 from abc import abstractmethod as virtual
-from typing import Any
+import numpy as np
+from typing import TypeVar, TypeAlias, Any
 
 # Displayable are objects that can be directly displayed on the figure
-# Drawable are objects that has the draw iterator - which is defined via repeatedly yielding displayables
+
+Number: TypeAlias = int | float | np.floating | np.integer
 
 class Displayable(ABC):
     """Base class for any object that could be displayed in the figure
     Displayables are the layer 0 interaction between external libraries (such as matplotlib or tikz) and your code
     Displayables should only draw really really basic stuff such as a line or an arrow or a point"""
-    name: str = "drawer"
 
     @virtual
     def __init__(self) -> None:
@@ -29,7 +30,7 @@ class Displayable(ABC):
     @property
     def coordinates(self):
         if not hasattr(self, "_coordinates") or self._coordinates is None:
-            self._coordinates: dict[Any, tuple] = {}
+            self._coordinates: dict[Any, tuple[Number, ...]] = {}
         return self._coordinates
     
     @property

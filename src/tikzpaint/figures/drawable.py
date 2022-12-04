@@ -1,8 +1,10 @@
 from abc import ABC
 from abc import abstractmethod as virtual
-from typing import Generator, Any
+from typing import Generator
 
 from tikzpaint.figures.displayable import Displayable
+
+# Drawable are objects that has the draw iterator - which is defined via repeatedly yielding displayables
 
 class Drawable(ABC):
     """Base class for any object that could be displayed in the figure. 

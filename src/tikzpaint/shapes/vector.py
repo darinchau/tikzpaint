@@ -18,7 +18,7 @@ class Vector(Drawable, Generic[_SupportArithmetic]):
         self.__v = tuple(coords)
 
     def draw(self) -> Generator[Displayable, None, None]:
-        coords = self.__v
+        coords = tuple(float(x) for x in self.__v)
         origin = tuple([0] * len(coords))
         yield L0Arrow(origin, coords)
         return

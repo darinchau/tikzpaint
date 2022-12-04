@@ -1,4 +1,4 @@
-from tikzpaint.figures import Displayable
+from tikzpaint.figures import Displayable, Number
 import matplotlib.pyplot as plt
 
 class L0Arrow(Displayable):
@@ -8,17 +8,17 @@ class L0Arrow(Displayable):
     start: coordinates of the start of an arrow
     end: coordinates of the end of an arrow"""
     name = "Arrow"
-    def __init__(self, start: tuple, end: tuple):
+    def __init__(self, start: tuple[Number, ...], end: tuple[Number, ...]):
         self.coordinates["start"] = start
         self.coordinates["end"] = end
     
-    def tikzify(self, options: str):
+    def tikzify(self):
         start = self.coordinates["start"]
         end = self.coordinates["end"]
-        if not options:
+        if not self.tikz_options:
             return f"\\draw[->] {start} -- {end};"
         else:
-            return f"\\draw[{options}, ->] {start} -- {end};"
+            return f"\\draw[{self.tikz_options}, ->] {start} -- {end};"
 
     def plot(self):
         start = self.coordinates["start"]

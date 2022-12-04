@@ -1,13 +1,13 @@
 from typing import Generator
 
-from tikzpaint.figures import Drawable, Displayable
+from tikzpaint.figures import Drawable, Displayable, Number
 
 from tikzpaint.shapes.displayable.arrow import L0Arrow
 
 class Arrow(Drawable):
     """Implementation of an arrow that could be drawn on a figure"""
     name = "Arrow"
-    def __init__(self, start: tuple, end: tuple):
+    def __init__(self, start: tuple[Number, ...], end: tuple[Number, ...]):
         self.start = start
         self.end = end
     

@@ -1,10 +1,10 @@
-from tikzpaint.figures import Displayable
+from tikzpaint.figures import Displayable, Number
 import matplotlib.pyplot as plt
 
 class L0Path(Displayable):
     """Implementation of a path that could be drawn on a figure"""
     name = "Path"
-    def __init__(self, coords: list[tuple]) -> None:
+    def __init__(self, coords: list[tuple[Number, ...]]) -> None:
         for i, t in enumerate(coords):
             self.coordinates[i] = t
         self.lencoords = len(coords)

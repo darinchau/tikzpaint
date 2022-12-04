@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from abc import ABC
 import numpy as np
 from typing import Callable, Any, Generator
@@ -86,9 +88,9 @@ class Figure:
                 if "projection" in kwargs:
                     proj: Projection = kwargs["projection"]
                     if not proj.result_dims == 2:
-                        raise ValueError("Output of projection dimensions must be 2")
+                        raise ValueError(f"Output of projection dimensions must be 2, recieved {proj.result_dims} instead")
                     if not proj.input_dims == self.ndims:
-                        raise ValueError(f"Input of projection dimensions must be {self.ndims}")
+                        raise ValueError(f"Input of projection dimensions must be {self.ndims}, recieved {proj.input_dims} instead")
                     d.coordinates[key] = val = proj(val)
                 
                 # Perform rounding by default unless explicitly set to false

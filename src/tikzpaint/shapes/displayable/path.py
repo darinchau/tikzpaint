@@ -15,7 +15,9 @@ class L0Path(Displayable):
             _x, _y = self.coordinates[i]
             x.append(_x)
             y.append(_y)
-        plt.plot(x, y, "-k")
+        kw=self.options.to_plt()
+        kw["ls"] = "-"
+        plt.plot(x, y, kwargs=kw)
 
     def tikzify(self) -> str:
         coords = " -- ".join([str(self.coordinates[i]) for i in range(self.lencoords)])

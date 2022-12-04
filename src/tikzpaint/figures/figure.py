@@ -1,10 +1,7 @@
 from __future__ import annotations
 
-from abc import ABC
-import numpy as np
-from typing import Callable, Any, Generator
+from typing import Any
 import matplotlib.pyplot as plt
-from inspect import signature
 
 from tikzpaint.util import copy, DECIMALS, num_parameters, notFalse
 from tikzpaint.util import Coordinates
@@ -12,12 +9,14 @@ from tikzpaint.util import Coordinates
 from tikzpaint.figures.drawable import Drawable
 from tikzpaint.figures.displayable import Displayable
 from tikzpaint.figures.projection import Projection
+from tikzpaint.figures.options import Options
 
 class Figure:
     """Figures stores all the thinks you are about to draw
     Available kwargs:
         - projection: Projection = defines a linear transformation from Rn to R2
-        - round: bool = if set to false, then we will skip the rounding step """
+        - round: bool = if set to false, then we will skip the rounding step
+        - bound: Number = if given, then we will only draw stuff in the cube given by bounds centered at the origin, using the bounds method in every drawable"""
     def __init__(self, ndims: int = 2) -> None:
         self.toDraw : list[Displayable] = []
         self.ndims : int = ndims
@@ -52,17 +51,16 @@ class Figure:
 
         return
     
-
     def draw(self, d: Drawable) -> None:
         """Add something to draw in tikz code"""
         # Perform one checking first
         for dis in d.draw():
-            for key, val in dis.coordinates.items():
-                if type(val) != tuple:
-                    raise TypeError(f"The coordinate {key}: {val} in {d} is not a tuple")
+            for key, coord in dis.coordinates.items():
+                if not isinstance(coord, Coordinates):
+                    raise TypeError(f"The coordinate {key}: {coord} in {d} is not a coordinate point")
                 
-                if len(val) != self.ndims:
-                    raise ValueError(f"The coordinate {key}: {val} in {d} has incorrect number of dimensions ({len(val)}) before projection, expects {self.ndims}")
+                if coord.n != self.ndims:
+                    raise ValueError(f"The coordinate {key}: {coord} in {d} has incorrect number of dimensions ({len(coord)}) before projection, expects {self.ndims}")
 
         # Only append if everything passes the check   
         for dis in d.draw(): 
@@ -101,7 +99,7 @@ class Figure:
                 # Perform rounding by default unless explicitly set to false
                 if notFalse(kwargs, "round"):
                     d.coordinates[key] = val = Coordinates(round(x, DECIMALS) for x in val)
-                
+
                 # Check dimensions
                 if len(val) != 2:
                     raise ValueError(f"The coordinate {key}: {val} in {d} has incorrect number of dimensions: {len(val)}")

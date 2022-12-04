@@ -8,7 +8,6 @@ class L0Arrow(Displayable):
     
     start: coordinates of the start of an arrow
     end: coordinates of the end of an arrow"""
-    name = "Arrow"
     def __init__(self, start: Coordinates, end: Coordinates):
         self.coordinates["start"] = copy(start)
         self.coordinates["end"] = copy(end)
@@ -25,7 +24,7 @@ class L0Arrow(Displayable):
         start = self.coordinates["start"]
         end = self.coordinates["end"]
         xcoords, ycoords = (start[0], end[0]), (start[1], end[1])
-        plt.plot(xcoords, ycoords)
+        plt.plot(xcoords, ycoords, kwargs=self.options.to_plt())
     
     def __copy__(self):
         return L0Arrow(self.coordinates["start"], self.coordinates["end"])

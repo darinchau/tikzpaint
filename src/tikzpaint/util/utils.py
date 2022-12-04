@@ -75,3 +75,8 @@ def to_subscript(a: int):
 
 def notFalse(kwargs: dict[Any, Any], kw: Any):
     return not kw in kwargs or kwargs[kw]
+
+def domain(start: float, end: float, res: int):
+    for i in range(res + 1):
+        yield start * i / res + end * (1 - i / res)
+    return

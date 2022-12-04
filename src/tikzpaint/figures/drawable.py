@@ -17,6 +17,3 @@ class Drawable(ABC):
     @virtual
     def draw(self)  -> Generator[Displayable, None, None]:
         pass
-
-    def bound(self, bounds: float) -> Drawable:
-        raise NotImplementedError(f"The bound method for {type(self).__name__} has not been implemented")

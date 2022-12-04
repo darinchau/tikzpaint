@@ -5,33 +5,34 @@ from abc import ABC, abstractmethod as virtual
 from typing import TypeVar, Generic, Generator, Iterator, Iterable
 from math import gcd
 
-from tikzpaint.util import copy, isZero, DECIMALS
+from tikzpaint.util.utils import copy, isZero
+from tikzpaint.util.constants import DECIMALS
 
 Number = TypeVar("Number", int, float, np.int64, np.float64, np.int32, np.integer, np.floating)
 
 class Coordinates:
     """A named tuple imbued with loads of coordinates method which serves as the base type for most stuff here"""
-    def __init__(self, coords: Iterable[float]):
-        self.__v = tuple(float(x) for x in coords)
+    def __init__(self, coords: Coordinates | Iterable[Number]):
+        self._v = tuple(float(x) for x in coords)
     
     def __getitem__(self, idx):
-        return self.__v[idx]
+        return self._v[idx]
     
     # Now Coordinates(tuple(v)) = tuple(Coordinates(v)) = v
     def __iter__(self):
-        return iter(self.__v)
+        return iter(self._v)
     
     def __len__(self):
-        return len(self.__v)
+        return len(self._v)
     
     def __repr__(self):
         coords = []
-        for v in self.__v:
+        for v in self._v:
             coords.append(str(round(v, DECIMALS)))
         return "(" + ", ".join(coords) + ")"
 
     def __copy__(self):
-        return Coordinates(copy(x) for x in self.__v)
+        return Coordinates(copy(x) for x in self._v)
     
     @property
     def magnitude(self) -> float:
@@ -45,16 +46,16 @@ class Coordinates:
         """Returns the point on the unit ball thats one unit length away from the origin but in the same direction as usual
         If the magnitude of the vector is 0 then returns the zero vector"""
         if isZero(self.magnitude, strict=True):
-            return Coordinates(0 for _ in self.__v)
-        return Coordinates(float(x / self.magnitude) for x in self.__v)
+            return Coordinates(0 for _ in self._v)
+        return Coordinates(float(x / self.magnitude) for x in self._v)
     
     @property
     def n(self):
         """float of dimensions"""
-        return len(self.__v)
+        return len(self._v)
     
     def scale(self, factor: Number)  -> Coordinates:
-        return Coordinates(float(x * factor) if self.magnitude > 0 else 0 for x in self.__v)
+        return Coordinates(float(x * factor) if self.magnitude > 0 else 0 for x in self._v)
     
     def checkLength(self, other: Coordinates):
         if not self.n == other.n:
@@ -83,7 +84,7 @@ class Coordinates:
         return np.allclose(np.array(self), np.array(other))
     
     def __hash__(self) -> int:
-        return hash(self.__v)
+        return hash(self._v)
     
     def dot(self, other: Coordinates) -> float:
         self.checkLength(other)

@@ -2,6 +2,7 @@ from abc import ABC
 from abc import abstractmethod as virtual
 import numpy as np
 from tikzpaint.util import Coordinates
+from tikzpaint.figures.options import Options
 
 # Displayable are objects that can be directly displayed on the figure
 
@@ -34,12 +35,12 @@ class Displayable(ABC):
     @property
     def options(self):
         if not hasattr(self, "_options") or self._options is None:
-            self._options: list[str] = []
+            self._options = Options()
         return self._options
 
     @property
     def tikz_options(self) -> str:
-        return ", ".join(self.options)
+        return self.options.to_tikz()
     
     @virtual
     def __copy__(self):

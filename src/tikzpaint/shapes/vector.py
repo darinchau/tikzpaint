@@ -14,7 +14,7 @@ from tikzpaint.shapes.displayable.arrow import L0Arrow
 class Vector(Drawable, Coordinates):
     """Implementation of a vector that could be drawn on a canvas"""
     def draw(self) -> Generator[Displayable, None, None]:
-        origin = Coordinates([0] * len(self.__v))
+        origin = Coordinates([0] * len(self._v))
         yield L0Arrow(origin, self)
         return
     

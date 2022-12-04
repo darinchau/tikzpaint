@@ -3,7 +3,8 @@ import matplotlib.pyplot as plt
 from abc import abstractmethod as virtual
 
 from tikzpaint.util import copy, isZero, num_parameters
-from tikzpaint.figures import Drawable, Displayable, Number
+from tikzpaint.figures import Drawable, Displayable 
+from tikzpaint.util import Coordinates
 
 from tikzpaint.shapes.displayable.path import L0Path
 
@@ -11,7 +12,7 @@ class ParametricSurface(Drawable):
     """Implementation of an n-dimensional surface (n-1 manifold) drawn on a figure
     f: function that takes in n-1 parameters and returns coordinates n
     iter_list is the sample points you want to use"""
-    def __init__(self, f: Callable[..., tuple[Number, ...]], *iters: Generator[float, None, None]):
+    def __init__(self, f: Callable[..., Coordinates], *iters: Generator[float, None, None]):
         if type(self) == ParametricSurface:
             raise TypeError("Cannot instantiate parametric surface directly")
         

@@ -1,7 +1,8 @@
 from typing import Generator
 import numpy as np
 
-from tikzpaint.figures import Drawable, Displayable, Number
+from tikzpaint.figures import Drawable, Displayable 
+from tikzpaint.util import Coordinates
 
 from tikzpaint.shapes.displayable.path import L0Path
 
@@ -10,7 +11,7 @@ class Path(Displayable):
     
     *args: tuples of coordinate points"""
     name = "Arrow"
-    def __init__(self, *args: tuple[Number, ...]):
+    def __init__(self, *args: Coordinates):
         self.args = args
 
     def draw(self) -> Generator[Displayable, None, None]:

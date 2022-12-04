@@ -72,3 +72,6 @@ def to_subscript(a: int):
     SUBSCRIPTS = "₀₁₂₃₄₅₆₇₈₉"
     st = "" if a >= 0 else "₋"
     return st + "".join([SUBSCRIPTS[int(i)] for i in str(abs(a))])
+
+def notFalse(kwargs: dict[Any, Any], kw: Any):
+    return not kw in kwargs or kwargs[kw]

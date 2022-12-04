@@ -6,7 +6,8 @@ from typing import Callable, Any, Generator
 import matplotlib.pyplot as plt
 from inspect import signature
 
-from tikzpaint.util import copy, DECIMALS, num_parameters
+from tikzpaint.util import copy, DECIMALS, num_parameters, notFalse
+from tikzpaint.util import Coordinates
 
 from tikzpaint.figures.drawable import Drawable
 from tikzpaint.figures.displayable import Displayable
@@ -15,16 +16,21 @@ from tikzpaint.figures.projection import Projection
 class Figure:
     """Figures stores all the thinks you are about to draw
     Available kwargs:
-        - projection: A Projection functions object that defines a linear transformation from Rn to R2"""
+        - projection: Projection = defines a linear transformation from Rn to R2
+        - round: bool = if set to false, then we will skip the rounding step
+        - float: bool = if set to false, then we will skip the step where we cast everything back to tuple of floats """
     def __init__(self, ndims: int = 2) -> None:
         self.toDraw : list[Displayable] = []
         self.ndims : int = ndims
     
     # output is true, then print, otherwise return the whole thing as a string
-    def tikzify(self, output: bool = True, indentation: int = 4, **kwargs) -> str:
+    def tikzify(self, output: bool = True, indentation: int = 4, scale: float = 0.7, **kwargs) -> str:
         """Output the tikz code"""
 
-        st = "\\begin{tikzpicture}[scale=0.7]\n"
+        if scale <= 0:
+            raise ValueError(f"Scale must be greater or equal to 0, recieved {scale}")
+
+        st = f"\\begin{{tikzpicture}}[scale={scale}]\n"
         for d in self.preprocess(kwargs):
             st += " " * indentation + d.tikzify() + "\n"
         st += "\\end{tikzpicture}"
@@ -57,7 +63,7 @@ class Figure:
                     raise TypeError(f"The coordinate {key}: {val} in {d} is not a tuple")
                 
                 if len(val) != self.ndims:
-                    raise ValueError(f"The coordinate {key}: {val} in {d} has incorrect number of dimensions before projection: {len(val)}")
+                    raise ValueError(f"The coordinate {key}: {val} in {d} has incorrect number of dimensions ({len(val)}) before projection, expects {self.ndims}")
 
         # Only append if everything passes the check   
         for dis in d.draw(): 
@@ -84,6 +90,10 @@ class Figure:
                 if len(val) != self.ndims:
                     raise ValueError(f"The coordinate {key}: {val} in {d} has incorrect number of dimensions before projection: {len(val)}")
 
+                # Floatcast unless explicitly set to false
+                if notFalse(kwargs, "float"):
+                    d.coordinates[key] = val = tuple(float(x) for x in val)
+
                 # Perform projection
                 if "projection" in kwargs:
                     proj: Projection = kwargs["projection"]
@@ -94,8 +104,8 @@ class Figure:
                     d.coordinates[key] = val = proj(val)
                 
                 # Perform rounding by default unless explicitly set to false
-                if not "round" in kwargs or kwargs["round"]:
-                    d.coordinates[key] = val = tuple([round(v, DECIMALS) for v in val])
+                if notFalse(kwargs, "round"):
+                    d.coordinates[key] = val = tuple(round(x, DECIMALS) for x in val)
                 
                 # Check dimensions
                 if len(val) != 2:

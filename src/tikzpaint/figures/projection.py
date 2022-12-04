@@ -7,8 +7,8 @@ import matplotlib.pyplot as plt
 from inspect import signature
 import numpy as np
 
-from tikzpaint.util import copy, NDArray, to_superscript, isZero
-
+from tikzpaint.util import copy, NDArray, to_superscript, isZero, get_orthonormal_basis
+from tikzpaint.util import Coordinates, Number
 
 class Projection(ABC):
     @property
@@ -22,7 +22,7 @@ class Projection(ABC):
         raise NotImplementedError
     
     @virtual
-    def __call__(self, t: tuple) -> tuple:
+    def __call__(self, t: Coordinates) -> Coordinates:
         raise NotImplementedError
     
     @virtual
@@ -44,7 +44,7 @@ class Projection(ABC):
             def result_dims(self) -> int:
                 return self.p2.result_dims
             
-            def __call__(self, t: tuple) -> tuple:
+            def __call__(self, t: Coordinates) -> Coordinates:
                 t = self.p1(t)
                 return self.p2(t)
             
@@ -52,7 +52,6 @@ class Projection(ABC):
                 return MixedProjection(copy(self.p1), copy(self.p2))
         
         return MixedProjection(self, p2)
-
 
 
 class LinearProjection(Projection):
@@ -71,7 +70,7 @@ class LinearProjection(Projection):
     def result_dims(self):
         return self.matrix.shape[0]
     
-    def __call__(self, t: tuple) -> tuple:
+    def __call__(self, t: Coordinates) -> Coordinates:
         v = np.array(t)
         if v.shape[0] != self.input_dims:
             raise ValueError(f"The length of t is expected to be ({self.input_dims}), got ({v.shape}) instead")
@@ -83,12 +82,10 @@ class LinearProjection(Projection):
         return LinearProjection(self.matrix)
     
     @classmethod
-    def fromNormalVector(cls, t: tuple):
+    def fromNormalVector(cls, t: Coordinates):
         """Creates a linear projection from Rn to Rn-1 with normal vector t"""
         # Use the gram-shit process
-        v = np.array(t)
-        M = np.concatenate([v.reshape(-1, 1), np.eye(len(t))], axis = 0)
-        q, r = np.linalg.qr(M)
+        q = get_orthonormal_basis(t)
         return LinearProjection(q[1:, :])
     
     def combine(self, p2: LinearProjection):
@@ -96,15 +93,23 @@ class LinearProjection(Projection):
         if not self.result_dims == p2.input_dims:
             raise ValueError(f"The output dimensions of self ({self.result_dims}) is not the same as the input dimensions of p2 ({p2.input_dims})")
         return LinearProjection(p2.matrix @ self.matrix)
+    
+    @classmethod
+    def scale(cls, scales: tuple[Number, ...]):
+        """Scales the whole space according to the scales tuple on each dimension."""
+        m = np.eye(len(scales))
+        for i, s in enumerate(scales):
+            m[i][i] = s
+        return LinearProjection(m)
 
 
-def project(t1: tuple, t2: tuple):
+def project(t1: Coordinates, t2: Coordinates):
     """Returns the projection of t1 to the span of t2"""
     v1 = np.array(t1)
     v2 = np.array(t2)
     return (v1 @ v2)/(v2 @ v2) * v2
 
-def magnitude(t: tuple) -> float:
+def magnitude(t: Coordinates) -> float:
     """Returns the magnitude of a vector"""
     v = np.array(t)
     return float(np.sqrt(np.sum(v ** 2)))
@@ -125,9 +130,16 @@ class StereographicProjection(Projection):
     def __copy__(self):
         return StereographicProjection(self.n)
     
-    def __call__(self, t: tuple) -> tuple:
+    def __call__(self, t: Coordinates) -> Coordinates:
         if not isZero(magnitude(t) - 1):
             raise ValueError(f"t: {t} is not a point on the unit sphere in R{to_superscript(self.n)}")
         if t[0] == 1:
             t = (0.999, 0.0019999) + t[2:]
-        return tuple(x / 1 - t[0] for x in t[1:])
+        return tuple(x / (1 - t[0]) for x in t[1:])
+    
+    @staticmethod
+    def fromOrigin(origin: Coordinates):
+        stereo = StereographicProjection(len(origin))
+        # First make the origin to (1, 0, 0, ...)
+        scale = LinearProjection.scale(tuple(1/ magnitude(origin) for _ in origin))
+        

@@ -1,7 +1,6 @@
 from abc import ABC
 from abc import abstractmethod as virtual
 import numpy as np
-from typing import TypeVar, TypeAlias, Any
 from tikzpaint.util import Coordinates
 
 # Displayable are objects that can be directly displayed on the figure
@@ -29,7 +28,7 @@ class Displayable(ABC):
     @property
     def coordinates(self):
         if not hasattr(self, "_coordinates") or self._coordinates is None:
-            self._coordinates: dict[Any, Coordinates] = {}
+            self._coordinates: dict[str | int, Coordinates] = {}
         return self._coordinates
     
     @property

@@ -2,7 +2,7 @@ from typing import Generator
 import numpy as np
 
 from tikzpaint.figures import Drawable, Displayable
-from tikzpaint.util import Coordinates
+from tikzpaint.util import Coordinates, copy
 
 from tikzpaint.shapes.vector import Vector
 from tikzpaint.shapes.displayable.path import L0Path
@@ -15,18 +15,15 @@ class Line(Drawable):
     resolution: the resolution of a line such that if we perform stereographic projections and what nots we can get a curvy line"""
     name = "Arrow"
     def __init__(self, start: Coordinates, end: Coordinates, resolution: int = 100):
-        self.start = start
-        self.end = end
+        self.start = copy(start)
+        self.end = copy(end)
         if resolution < 1:
             raise ValueError(f"Resolution must be greater or equal to 1, recieved {resolution}")
         self.resolution = resolution
     
     def gen_coords(self) -> Generator[Coordinates, None, None]:
         for i in range(self.resolution + 1):
-            start = np.array(self.start)
-            end = np.array(self.end)
-            res = start * (i / self.resolution) + end * (1 - i / self.resolution)
-            yield tuple(float(x) for x in res)
+            yield self.start.scale(i / self.resolution) + self.end.scale(1 - i / self.resolution)
         return
 
     def draw(self) -> Generator[Displayable, None, None]:

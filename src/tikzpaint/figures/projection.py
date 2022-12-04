@@ -35,8 +35,8 @@ class Projection(ABC):
             def __init__(self, p1: Projection, p2: Projection):
                 if not p1.result_dims == p2.input_dims:
                     raise ValueError(f"The output dimensions f p1 ({p1.result_dims}) is not the same as the input dimensions of p2 ({p2.input_dims})")
-                self.p1 = p1
-                self.p2 = p2
+                self.p1 = copy(p1)
+                self.p2 = copy(p2)
             
             def input_dims(self) -> int:
                 return self.p1.input_dims
@@ -50,9 +50,11 @@ class Projection(ABC):
             
             def __copy__(self):
                 return MixedProjection(copy(self.p1), copy(self.p2))
-        
-        return MixedProjection(self, p2)
 
+        return self.combine(p2)
+    
+    def __mul__(self, other: Projection):
+        return self.combine(other)
 
 class LinearProjection(Projection):
     """Projection is a function object useful for defining projections of coordinates
@@ -75,8 +77,7 @@ class LinearProjection(Projection):
         if v.shape[0] != self.input_dims:
             raise ValueError(f"The length of t is expected to be ({self.input_dims}), got ({v.shape}) instead")
         v = self.matrix @ v
-        # Cast back to default float to avoid shenanigans
-        return tuple(float(x) for x in v)
+        return Coordinates(v)
     
     def __copy__(self):
         return LinearProjection(self.matrix)
@@ -134,12 +135,13 @@ class StereographicProjection(Projection):
         if not isZero(magnitude(t) - 1):
             raise ValueError(f"t: {t} is not a point on the unit sphere in R{to_superscript(self.n)}")
         if t[0] == 1:
-            t = (0.999, 0.0019999) + t[2:]
-        return tuple(x / (1 - t[0]) for x in t[1:])
+            t = Coordinates([0.999, 0.0019999] + [x for i, x in enumerate(t) if i >= 2])
+        return Coordinates(x / (1 - t[0]) for i, x in enumerate(t) if i >= 1)
     
     @staticmethod
-    def fromOrigin(origin: Coordinates):
-        stereo = StereographicProjection(len(origin))
+    def fromOrigin(castOrigin: Coordinates):
+        stereo = StereographicProjection(len(castOrigin))
         # First make the origin to (1, 0, 0, ...)
-        scale = LinearProjection.scale(tuple(1/ magnitude(origin) for _ in origin))
-        
+        scale = LinearProjection.scale(tuple(1 / castOrigin.magnitude for _ in castOrigin))
+        move = get_orthonormal_basis(castOrigin.normalized())
+        return scale * move * stereo

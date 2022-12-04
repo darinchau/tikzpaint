@@ -7,6 +7,7 @@ from functools import total_ordering, cache
 from inspect import signature
 
 from tikzpaint.util.constants import NDArray, EPSILON, STRICT_EPSILON
+from tikzpaint.util.coordinates import Coordinates
 
 def isZero(obj: Any, strict: bool = False) -> bool:
     """Returns true if a is not zero, false otherwise. Automatically handles floating point comparison. 
@@ -46,6 +47,8 @@ def copy(obj: _copyable) -> _copyable:
     """Makes a deep copy via the dunder copy method in a class. If the parameter is a list, returns the recursive deep copy"""
     if isinstance(obj, int | float | str):
         return obj
+    if isinstance(obj, Coordinates):
+
     if isinstance(obj, list):
         return [copy(x) for x in obj] #type: ignore
     if isinstance(obj, tuple):

@@ -2,7 +2,7 @@ from typing import Generator
 import numpy as np
 
 from tikzpaint.figures import Drawable, Displayable 
-from tikzpaint.util import Coordinates
+from tikzpaint.util import Coordinates, copy
 
 from tikzpaint.shapes.displayable.path import L0Path
 
@@ -12,7 +12,7 @@ class Path(Displayable):
     *args: tuples of coordinate points"""
     name = "Arrow"
     def __init__(self, *args: Coordinates):
-        self.args = args
+        self.args = copy(args)
 
     def draw(self) -> Generator[Displayable, None, None]:
         yield L0Path(list(self.args))

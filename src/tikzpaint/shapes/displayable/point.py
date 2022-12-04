@@ -1,12 +1,11 @@
 from tikzpaint.figures import Displayable
-from tikzpaint.util import Coordinates
+from tikzpaint.util import Coordinates, copy
 import matplotlib.pyplot as plt
 
 class L0Point(Displayable):
-    """Implementation of an arrow that could be drawn on a figure"""
-    name = "Point"
+    """Implementation of a point that could be drawn on a figure"""
     def __init__(self, p: Coordinates):
-        self.coordinates[""] = p
+        self.coordinates[""] = copy(p)
     
     def tikzify(self):
         p = self.coordinates[""]

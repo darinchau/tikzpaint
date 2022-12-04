@@ -17,8 +17,7 @@ class Figure:
     """Figures stores all the thinks you are about to draw
     Available kwargs:
         - projection: Projection = defines a linear transformation from Rn to R2
-        - round: bool = if set to false, then we will skip the rounding step
-        - float: bool = if set to false, then we will skip the step where we cast everything back to tuple of floats """
+        - round: bool = if set to false, then we will skip the rounding step """
     def __init__(self, ndims: int = 2) -> None:
         self.toDraw : list[Displayable] = []
         self.ndims : int = ndims
@@ -84,15 +83,11 @@ class Figure:
             for key, val in d.coordinates.items():
                 
                 # Check type
-                if type(val) != tuple:
-                    raise TypeError(f"The coordinate {key}: {val} in {d} is not a tuple")
+                if not isinstance(self, Coordinates):
+                    raise TypeError(f"The coordinate {key}: {val} in {d} is not a coordinate point")
                 
                 if len(val) != self.ndims:
                     raise ValueError(f"The coordinate {key}: {val} in {d} has incorrect number of dimensions before projection: {len(val)}")
-
-                # Floatcast unless explicitly set to false
-                if notFalse(kwargs, "float"):
-                    d.coordinates[key] = val = tuple(float(x) for x in val)
 
                 # Perform projection
                 if "projection" in kwargs:
@@ -105,7 +100,7 @@ class Figure:
                 
                 # Perform rounding by default unless explicitly set to false
                 if notFalse(kwargs, "round"):
-                    d.coordinates[key] = val = tuple(round(x, DECIMALS) for x in val)
+                    d.coordinates[key] = val = Coordinates(round(x, DECIMALS) for x in val)
                 
                 # Check dimensions
                 if len(val) != 2:

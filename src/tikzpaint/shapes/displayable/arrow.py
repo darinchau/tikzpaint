@@ -1,5 +1,5 @@
 from tikzpaint.figures import Displayable
-from tikzpaint.util import Coordinates
+from tikzpaint.util import Coordinates, copy
 import matplotlib.pyplot as plt
 
 class L0Arrow(Displayable):
@@ -10,8 +10,8 @@ class L0Arrow(Displayable):
     end: coordinates of the end of an arrow"""
     name = "Arrow"
     def __init__(self, start: Coordinates, end: Coordinates):
-        self.coordinates["start"] = start
-        self.coordinates["end"] = end
+        self.coordinates["start"] = copy(start)
+        self.coordinates["end"] = copy(end)
     
     def tikzify(self):
         start = self.coordinates["start"]

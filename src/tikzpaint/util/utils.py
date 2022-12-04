@@ -47,8 +47,6 @@ def copy(obj: _copyable) -> _copyable:
     """Makes a deep copy via the dunder copy method in a class. If the parameter is a list, returns the recursive deep copy"""
     if isinstance(obj, int | float | str):
         return obj
-    if isinstance(obj, Coordinates):
-
     if isinstance(obj, list):
         return [copy(x) for x in obj] #type: ignore
     if isinstance(obj, tuple):

@@ -7,7 +7,6 @@ from functools import total_ordering, cache
 from inspect import signature
 
 from tikzpaint.util.constants import NDArray, EPSILON, STRICT_EPSILON
-from tikzpaint.util.coordinates import Coordinates
 
 def isZero(obj: Any, strict: bool = False) -> bool:
     """Returns true if a is not zero, false otherwise. Automatically handles floating point comparison. 

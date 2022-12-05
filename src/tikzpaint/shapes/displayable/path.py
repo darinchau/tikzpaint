@@ -1,6 +1,7 @@
 from tikzpaint.figures import Displayable
 from tikzpaint.util import Coordinates, copy
 import matplotlib.pyplot as plt
+from matplotlib.axes import Axes
 from typing import Iterable
 
 class L0Path(Displayable):
@@ -10,14 +11,14 @@ class L0Path(Displayable):
             self.coordinates[i] = copy(t)
         self.lencoords = len(coords)
     
-    def plot(self):
+    def plot(self, ax: Axes):
         x, y = [], []
         for i in range(self.lencoords):
             _x, _y = self.coordinates[i]
             x.append(_x)
             y.append(_y)
 
-        plt.plot(x, y, ls = "-", 
+        ax.plot(x, y, ls = "-", 
             color = self.options.pltcolor, 
             lw = self.options.width,
             alpha = self.options.opacity
@@ -28,4 +29,6 @@ class L0Path(Displayable):
         return f"\\draw[{self.tikz_options}] {coords};"
     
     def __copy__(self):
-        return L0Path([self.coordinates[i] for i in range(self.lencoords)])
+        p = L0Path([self.coordinates[i] for i in range(self.lencoords)])
+        p._set_options(self.options)
+        return p

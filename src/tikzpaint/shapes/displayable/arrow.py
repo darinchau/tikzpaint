@@ -1,6 +1,7 @@
 from tikzpaint.figures import Displayable
 from tikzpaint.util import Coordinates, copy
 import matplotlib.pyplot as plt
+from matplotlib.axes import Axes
 
 class L0Arrow(Displayable):
     """Implementation of an arrow that could be drawn on a figure. Note: arrows must be straight and they are not
@@ -20,16 +21,18 @@ class L0Arrow(Displayable):
         else:
             return f"\\draw[{self.tikz_options}, ->] {start} -- {end};"
 
-    def plot(self):
+    def plot(self, ax: Axes):
         start = self.coordinates["start"]
         end = self.coordinates["end"]
         x, y = start[0], start[1]
         dx, dy = end[0] - start[0], end[1] - start[1]
-        plt.arrow(x, y, dx, dy, 
+        ax.arrow(x, y, dx, dy, 
             color = self.options.pltcolor, 
             lw = self.options.width,
             alpha = self.options.opacity
         )
     
     def __copy__(self):
-        return L0Arrow(self.coordinates["start"], self.coordinates["end"])
+        a = L0Arrow(self.coordinates["start"], self.coordinates["end"])
+        a._set_options(self.options)
+        return a

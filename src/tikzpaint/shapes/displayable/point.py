@@ -1,6 +1,7 @@
 from tikzpaint.figures import Displayable
 from tikzpaint.util import Coordinates, copy
 import matplotlib.pyplot as plt
+from matplotlib.axes import Axes
 from typing import Any
 
 class L0Point(Displayable):
@@ -12,9 +13,9 @@ class L0Point(Displayable):
         p = self.coordinates[""]
         return f"\\node[{self.tikz_options}] at {p} {{}}"
 
-    def plot(self):
+    def plot(self, ax: Axes):
         x, y = self.coordinates[""]
-        plt.plot(x, y, 
+        ax.plot(x, y, 
             marker="o", 
             markersize=self.options.width * 10, 
             markeredgecolor=self.options.pltcolor, 
@@ -25,4 +26,6 @@ class L0Point(Displayable):
         )
     
     def __copy__(self):
-        return L0Point(self.coordinates[""])
+        p = L0Point(self.coordinates[""])
+        p._set_options(self.options)
+        return p

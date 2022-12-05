@@ -3,6 +3,8 @@ from abc import abstractmethod as virtual
 import numpy as np
 from tikzpaint.util import Coordinates, copy
 from tikzpaint.figures.options import PlotOptions
+from matplotlib.axes import Axes
+
 
 # Displayable are objects that can be directly displayed on the figure
 
@@ -22,7 +24,7 @@ class Displayable(ABC):
         raise NotImplementedError
     
     @virtual
-    def plot(self):
+    def plot(self, fig: Axes):
         """Plots the figure on a GUI using matplotlib"""
         raise NotImplementedError
     

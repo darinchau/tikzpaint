@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import Any
 import numpy as np
 
-import matplotlib.figure as MplFigure
+from matplotlib.figure import Figure as matplotlibFigure
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_agg import FigureCanvasAgg
 
@@ -44,17 +44,25 @@ class Figure:
         
         return st
     
-    def plot(self, show: bool = True, process_img: bool = False, off_axis: bool = True, **kwargs):
+    def plot(self, show: bool = True, process_img: bool = False, off_axis: bool = True, bound: float = -1, **kwargs):
         """Output the figure
         
         - show: bool = if set to true, then we will display the image, otherwise we wont
         - process_img: bool = if set to true, then we will return the image of the plot in this function.
-        - off_axis: bool = if set to True, then the axis will not appear in the resulting image"""
+        - off_axis: bool = if set to True, then the axis will not appear in the resulting image
+        - bound: float = if -1, then there are no bounds, otherwise we restrict our view to (-a, a) on both x and y axis"""
 
-        fig = plt.figure()        
+        fig = plt.figure()   
+
+        ax = fig.gca()     
 
         for d in self.preprocess(kwargs):
-            d.plot()
+            d.plot(ax)
+            
+        
+        if bound >= 0:
+            ax.set_xbound(-bound, bound)
+            ax.set_ybound(-bound, bound)
         
         arr = None
 
@@ -134,7 +142,7 @@ class Figure:
             yield d
 
 
-def mpl_to_np(fig: MplFigure.Figure, offaxis: bool = True) -> NDArray[np.uint8]:
+def mpl_to_np(fig: matplotlibFigure, offaxis: bool = True) -> NDArray[np.uint8]:
     """Converts a matplotlib figure to a RGB frame after updating the canvas."""
 
     canvas = FigureCanvasAgg(fig)

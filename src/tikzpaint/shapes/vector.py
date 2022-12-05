@@ -22,4 +22,6 @@ class Vector(Drawable, Coordinates):
         """This method helps us take care of the bounding separately
         the bounds denotes a cube around the origin, the range which we will draw"""
         the_max = max([abs(x) for x in self])
-        return Vector((self).scale(bounds/the_max))
+        if the_max <= bounds:
+            return Vector(self)
+        return Vector(self.scale(bounds/the_max))

@@ -21,8 +21,5 @@ class Vector(Drawable, Coordinates):
     def bound(self, bounds: float) -> Vector:
         """This method helps us take care of the bounding separately
         the bounds denotes a cube around the origin, the range which we will draw"""
-        nv = Vector(self)
-        for i in range(len(nv)):
-            if abs(nv[i]) > bounds:
-                nv.scale(bounds / abs(nv[i]))
-        return nv
+        the_max = max([abs(x) for x in self])
+        return Vector((self).scale(bounds/the_max))

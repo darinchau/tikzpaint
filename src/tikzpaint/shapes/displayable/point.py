@@ -18,7 +18,10 @@ class L0Point(Displayable):
             marker="o", 
             markersize=self.options.width * 10, 
             markeredgecolor=self.options.pltcolor, 
-            markerfacecolor=self.options.pltcolor
+            markerfacecolor=self.options.pltcolor,
+            color = self.options.pltcolor, 
+            lw = self.options.width,
+            alpha = self.options.opacity
         )
     
     def __copy__(self):

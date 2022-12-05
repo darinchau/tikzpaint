@@ -1,6 +1,7 @@
 from tikzpaint.figures import Displayable
 from tikzpaint.util import Coordinates, copy
 import matplotlib.pyplot as plt
+from typing import Iterable
 
 class L0Path(Displayable):
     """Implementation of a path that could be drawn on a figure"""
@@ -15,9 +16,12 @@ class L0Path(Displayable):
             _x, _y = self.coordinates[i]
             x.append(_x)
             y.append(_y)
-        kw=self.options.to_plt()
-        kw["ls"] = "-"
-        plt.plot(x, y, kwargs=kw)
+
+        plt.plot(x, y, ls = "-", 
+            color = self.options.pltcolor, 
+            lw = self.options.width,
+            alpha = self.options.opacity
+        )
 
     def tikzify(self) -> str:
         coords = " -- ".join([str(self.coordinates[i]) for i in range(self.lencoords)])

@@ -23,8 +23,13 @@ class L0Arrow(Displayable):
     def plot(self):
         start = self.coordinates["start"]
         end = self.coordinates["end"]
-        xcoords, ycoords = (start[0], end[0]), (start[1], end[1])
-        plt.plot(xcoords, ycoords, kwargs=self.options.to_plt())
+        x, y = start[0], start[1]
+        dx, dy = end[0] - start[0], end[1] - start[1]
+        plt.arrow(x, y, dx, dy, 
+            color = self.options.pltcolor, 
+            lw = self.options.width,
+            alpha = self.options.opacity
+        )
     
     def __copy__(self):
         return L0Arrow(self.coordinates["start"], self.coordinates["end"])

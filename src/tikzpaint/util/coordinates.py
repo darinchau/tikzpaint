@@ -88,7 +88,7 @@ class Coordinates:
     
     def dot(self, other: Coordinates) -> float:
         self.checkLength(other)
-        return float(np.array(np.array(self), np.array(other)))
+        return float(np.dot(np.array(self), np.array(other)))
     
     def project(self, target: Coordinates):
         self.checkLength(target)

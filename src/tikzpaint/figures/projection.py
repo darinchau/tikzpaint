@@ -82,13 +82,6 @@ class LinearProjection(Projection):
     def __copy__(self):
         return LinearProjection(self.matrix)
     
-    @classmethod
-    def fromNormalVector(cls, t: Coordinates):
-        """Creates a linear projection from Rn to Rn-1 with normal vector t"""
-        # Use the gram-shit process
-        q = get_orthonormal_basis(t)
-        return LinearProjection(q[1:, :])
-    
     def combine(self, p2: LinearProjection):
         """Combines the linear projection self and p2, performing self first then p2"""
         if not self.result_dims == p2.input_dims:

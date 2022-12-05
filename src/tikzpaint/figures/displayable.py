@@ -1,8 +1,8 @@
 from abc import ABC
 from abc import abstractmethod as virtual
 import numpy as np
-from tikzpaint.util import Coordinates
-from tikzpaint.figures.options import Options
+from tikzpaint.util import Coordinates, copy
+from tikzpaint.figures.options import PlotOptions
 
 # Displayable are objects that can be directly displayed on the figure
 
@@ -35,8 +35,12 @@ class Displayable(ABC):
     @property
     def options(self):
         if not hasattr(self, "_options") or self._options is None:
-            self._options = Options()
+            self._options = PlotOptions()
         return self._options
+
+    def _set_options(self, option: PlotOptions):
+        """Creates a copy of the Plot Option and set it to the drawable."""
+        self._options = copy(option)
 
     @property
     def tikz_options(self) -> str:

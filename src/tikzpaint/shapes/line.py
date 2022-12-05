@@ -28,3 +28,7 @@ class Line(Drawable):
     def draw(self) -> Generator[Displayable, None, None]:
         yield L0Path(list(self.gen_coords()))
         return
+    
+    @classmethod
+    def StraightLine(cls, start: Coordinates | Iterable[Number], end: Coordinates | Iterable[Number]):
+        return cls(start, end, resolution = 1)

@@ -1,1 +1,2 @@
 numpy=1.23.5
+maplotlib=3.6.2

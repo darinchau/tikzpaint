@@ -152,10 +152,10 @@ def mpl_to_np(fig: matplotlibFigure, offaxis: bool = True) -> NDArray[np.uint8]:
     canvas.draw()  # update/draw the elements
 
     # get the width and the height to resize the matrix
-    l, b, w, h = canvas.figure.bbox.bounds # type: ignore
+    l, b, w, h = canvas.figure.bbox.bounds #type: ignore
     w, h = int(w), int(h)
 
     #  exports the canvas to a string buffer and then to a numpy nd.array
     buf = canvas.tostring_rgb()
-    image = np.frombuffer(buf, dtype=np.uint8) # type: ignore
+    image = np.frombuffer(buf, dtype=np.uint8) #type: ignore
     return image.reshape(h, w, 3)

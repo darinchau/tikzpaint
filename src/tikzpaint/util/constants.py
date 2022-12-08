@@ -8,4 +8,6 @@ from typing import TypeAlias, TypeVar
 DECIMALS: int = 5
 
 EPSILON = 10 ** - (DECIMALS + 1)
-STRICT_EPSILON: float = finfo(float).eps # type: ignore
+
+# Strict epsilon is a private variable that we can only use with iszero
+STRICT_EPSILON = finfo(float).eps #type: ignore

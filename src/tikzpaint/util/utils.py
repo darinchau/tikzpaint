@@ -12,10 +12,11 @@ def isZero(obj: Any, strict: bool = False) -> bool:
     """Returns true if a is not zero, false otherwise. Automatically handles floating point comparison. 
     Strict flag is true, then the number must be 0. 
     For types that are not number, resort to the __bool__ method and return not(a)"""
-    epsilon: float = STRICT_EPSILON if strict else EPSILON # type: ignore
+    epsilon: float = STRICT_EPSILON if strict else EPSILON #type: ignore
     try:
         if isinstance(obj, np.ndarray):
-            return np.all(np.abs(obj) < epsilon) # type: ignore
+            # Not not is same as bool()
+            return not not np.all(np.abs(obj) < epsilon)
         else:
             return np.abs(obj) < epsilon
     except TypeError:
@@ -55,7 +56,7 @@ def copy(obj: _copyable) -> _copyable:
     if isinstance(obj, np.ndarray):
         return np.array(obj, dtype = obj.dtype)
     if "__copy__" in dir(obj):
-        return obj.__copy__() # type: ignore
+        return obj.__copy__() #type: ignore
     raise TypeError(f"Object of type {type(obj).__name__} is not copyable!")
 
 

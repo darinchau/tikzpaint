@@ -7,9 +7,10 @@ from matplotlib.figure import Figure as matplotlibFigure
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_agg import FigureCanvasAgg
 
-from tikzpaint.util import copy, DECIMALS, num_parameters, notFalse
+from tikzpaint.util import copy, DECIMALS, num_parameters
 from tikzpaint.util import NDArray
 from tikzpaint.util import Coordinates
+from tikzpaint.util.utils import notFalse
 
 from tikzpaint.figures.drawable import Drawable
 from tikzpaint.figures.displayable import Displayable

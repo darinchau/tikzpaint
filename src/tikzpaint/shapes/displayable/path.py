@@ -29,6 +29,4 @@ class L0Path(Displayable):
         return f"\\draw[{self.tikz_options}] {coords};"
     
     def __copy__(self):
-        p = L0Path([self.coordinates[i] for i in range(self.lencoords)])
-        p._set_options(self.options)
-        return p
+        return L0Path([self.coordinates[i] for i in range(self.lencoords)])

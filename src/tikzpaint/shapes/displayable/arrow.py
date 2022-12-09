@@ -32,7 +32,5 @@ class L0Arrow(Displayable):
             alpha = self.options.opacity
         )
     
-    def __copy__(self):
-        a = L0Arrow(self.coordinates["start"], self.coordinates["end"])
-        a._set_options(self.options)
-        return a
+    def __copy__(self):        
+        return L0Arrow(self.coordinates["start"], self.coordinates["end"])

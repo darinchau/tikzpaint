@@ -26,6 +26,4 @@ class L0Point(Displayable):
         )
     
     def __copy__(self):
-        p = L0Point(self.coordinates[""])
-        p._set_options(self.options)
-        return p
+        return L0Point(self.coordinates[""])

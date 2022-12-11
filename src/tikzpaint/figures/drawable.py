@@ -7,7 +7,7 @@ import numpy as np
 
 from tikzpaint.figures.displayable import Displayable
 from tikzpaint.figures.options import PlotOptions
-from tikzpaint.util import Coordinates
+from tikzpaint.util import Coordinates, copy
 
 # Drawable are objects that has the draw iterator - which is defined via repeatedly yielding displayables
 
@@ -18,6 +18,13 @@ class Drawable(ABC):
     @virtual
     def draw(self)  -> Generator[Displayable, None, None]:
         pass
+
+    def figparse(self) -> Generator[Displayable, None, None]:
+        """This draw method is different because we also copy the plot options over, so we dont have to do this in figure.py"""
+        for disp in self.draw():
+            dis = copy(disp)
+            dis._set_config(self.option)
+            yield dis
     
     @property
     def option(self) -> PlotOptions:

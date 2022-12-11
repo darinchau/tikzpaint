@@ -1,9 +1,9 @@
 from dataclasses import dataclass
 from typing import Any
-from tikzpaint.util.supportOption import Options
+from tikzpaint.util.supportConfig import _Config
 
 @dataclass
-class PlotOptions(Options):
+class PlotOptions(_Config):
     COLORCODE = {
         "red":      '#ee0000', 
         "green":    '#00ee00', 

@@ -21,8 +21,8 @@ class Figure:
     """Figures stores all the thinks you are about to draw
     Available kwargs:
         - projection: Projection = defines a linear transformation from Rn to R2
-        - round: bool = if set to false, then we will skip the rounding step
-        - bound: Number = if given, then we will only draw stuff in the cube given by bounds centered at the origin, using the bounds method in every drawable"""
+        - round: bool = if set to false, then we will skip the rounding step """
+    
     def __init__(self, ndims: int = 2) -> None:
         self.toDraw : list[Displayable] = []
         self.ndims : int = ndims
@@ -90,14 +90,12 @@ class Figure:
                     raise ValueError(f"The coordinate {key}: {coord} in {type(d).__name__} has incorrect number of dimensions ({len(coord)}) before projection, expects {self.ndims}")
 
         # Only append if everything passes the check   
-        for dis_ in d.draw():
-            dis = copy(dis_)
-            dis._set_options(d.option)
+        for dis in d.figparse():
             self.toDraw.append(dis)
     
     def draw(self, *d: Drawable):
         """Registers the drawable onto the drawing board, for rendering later
-        - d: the drawable object to be drawn"""
+        - d: the drawable object(s) to be drawn"""
         for drawable in d:
             self._draw(drawable)
     
@@ -108,10 +106,10 @@ class Figure:
         return self._options
     
     def preprocess(self, kwargs: dict[str, Any]):
-        for d_ in self.toDraw:
+        for displayable in self.toDraw:
 
             # Make a copy first to avoid modification of the original
-            d = copy(d_)
+            d = copy(displayable)
 
             for key, coord in d.coordinates.items():
                 # Check type

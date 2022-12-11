@@ -3,21 +3,22 @@ from __future__ import annotations
 # This module exists purely to implement first class support for copy and displayable
 from abc import ABC, abstractmethod as virtual
 
+"""This exists purely to add support for copying displayables"""
 
-class Options(ABC):
+class _Config(ABC):
     @virtual
-    def __copy__(self) -> Options:
+    def __copy__(self) -> _Config:
         raise NotImplementedError
 
-class _Support_Option(ABC):
+class _ISupportConfig(ABC):
     @property
     @virtual
-    def options(self) -> Options:
+    def options(self) -> _Config:
         raise NotImplementedError
 
-    def _set_options(self, option: Options) -> None:
+    def _set_config(self, config: _Config) -> None:
         """Sets the option of the object"""
-        self._options = option.__copy__()
+        self._config = config.__copy__()
     
     @virtual
     def __copy__(self):

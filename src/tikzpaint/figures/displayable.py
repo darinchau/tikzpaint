@@ -4,12 +4,11 @@ import numpy as np
 from typing import Any, ParamSpec, Callable
 from tikzpaint.util import Coordinates, copy
 from tikzpaint.figures.options import PlotOptions
-from tikzpaint.util.supportConfig import _ISupportConfig
 from matplotlib.axes import Axes
 
 
 # Displayable are objects that can be directly displayed on the figure
-class Displayable(_ISupportConfig):
+class Displayable:
     """Base class for any object that could be displayed in the figure
     Displayables are the layer 0 interaction between external libraries (such as matplotlib or tikz) and your code
     Displayables should only draw really really basic stuff such as a line or an arrow or a point"""

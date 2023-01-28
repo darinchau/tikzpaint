@@ -9,12 +9,12 @@ from tikzpaint.util import copy, isZero, DECIMALS
 from tikzpaint.util import Number, Coordinates
 from tikzpaint.figures import Drawable, Displayable
 
-from tikzpaint.shapes.displayable.arrow import L0Arrow
+from tikzpaint.shapes.base.arrow import L0Arrow
 
 class Vector(Drawable, Coordinates):
     """Implementation of a vector that could be drawn on a canvas"""
     def draw(self) -> Generator[Displayable, None, None]:
-        origin = Coordinates([0] * len(self._v))
+        origin = Coordinates([0] * len(self))
         yield L0Arrow(origin, self)
         return
     

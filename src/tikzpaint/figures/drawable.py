@@ -23,7 +23,7 @@ class Drawable(ABC):
         """This draw method is different because we also copy the plot options over, so we dont have to do this in figure.py"""
         for disp in self.draw():
             dis = copy(disp)
-            dis._set_config(self.option)
+            dis._options = copy(disp.options)
             yield dis
     
     @property

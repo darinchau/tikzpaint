@@ -30,3 +30,4 @@ class L0Path(Displayable):
     
     def __copy__(self):
         return L0Path([self.coordinates[i] for i in range(self.lencoords)])
+    

@@ -4,7 +4,7 @@ import numpy as np
 from tikzpaint.figures import Drawable, Displayable 
 from tikzpaint.util import Coordinates, copy, Number
 
-from tikzpaint.shapes.displayable.path import L0Path
+from tikzpaint.shapes.base import L0Path
 
 class Path(Displayable):
     """Implementation of an line that could be drawn on a figure

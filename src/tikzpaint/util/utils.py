@@ -7,7 +7,6 @@ from functools import total_ordering, cache
 from inspect import signature
 
 from tikzpaint.util.constants import NDArray, EPSILON, STRICT_EPSILON
-from tikzpaint.util.supportConfig import _ISupportConfig
 
 def isZero(obj: Any, strict: bool = False) -> bool:
     """Returns true if a is not zero, false otherwise. Automatically handles floating point comparison. 
@@ -61,9 +60,9 @@ def copy(obj: _copyable) -> _copyable:
     if isinstance(obj, np.ndarray):
         return np.array(obj, dtype = obj.dtype)
     
-    if isinstance(obj, _ISupportConfig):
-        newobj = obj.__copy__()
-        newobj._set_options(obj.options)
+    if "__copy__" in dir(obj) and "options" in dir(obj):
+        newobj = obj.__copy__() #type: ignore
+        newobj._options = copy(obj.options) #type: ignore
         return newobj
     
     if "__copy__" in dir(obj):

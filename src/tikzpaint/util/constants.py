@@ -10,4 +10,4 @@ DECIMALS: int = 5
 EPSILON = 10 ** - (DECIMALS + 1)
 
 # Strict epsilon is a private variable that we can only use with iszero
-STRICT_EPSILON = finfo(float).eps #type: ignore
+STRICT_EPSILON = 7./3-4./3-1

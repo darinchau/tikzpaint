@@ -11,6 +11,9 @@ from tikzpaint.util import copy, NDArray, to_superscript, isZero, get_orthonorma
 from tikzpaint.util import Coordinates, Number
 
 class Projection(ABC):
+    def __init__(self):
+        raise NotImplementedError("Cannot construct a projection object on its own")
+    
     @property
     @virtual
     def input_dims(self) -> int:

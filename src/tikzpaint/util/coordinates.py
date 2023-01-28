@@ -40,15 +40,18 @@ class Coordinates(tuple):
         return len(self)
     
     def scale(self, factor: Number)  -> Coordinates:
+        """Creates a new copy that is a scaled vector with respect to the origin"""
         return Coordinates(float(x * factor) if self.magnitude > 0 else 0 for x in self)
     
     def checkLength(self, other: Coordinates):
+        """Raises and error if self and other has different length"""
         if not self.n == other.n:
             raise ValueError("The two vectors are of different length")
 
     @property
     def degree(self) -> float:
-        return float(np.sum(np.array(self)))
+        """Returns the sum of all the entries in self"""
+        return sum(self)
 
     def __add__(self, other: Coordinates) -> Coordinates:
         self.checkLength(other)

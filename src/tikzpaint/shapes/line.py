@@ -5,7 +5,7 @@ from tikzpaint.figures import Drawable, Displayable
 from tikzpaint.util import Coordinates, copy, Number
 
 from tikzpaint.shapes.vector import Vector
-from tikzpaint.shapes.displayable.path import L0Path
+from tikzpaint.shapes.base import L0Path
 
 class Line(Drawable):
     """Implementation of an line that could be drawn on a figure

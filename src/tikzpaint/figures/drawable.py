@@ -17,7 +17,7 @@ class Drawable(ABC):
     Drawables are layer 1 interactions with libraries, above displayables"""
     @virtual
     def draw(self)  -> Generator[Displayable, None, None]:
-        pass
+        raise NotImplementedError
 
     def figparse(self) -> Generator[Displayable, None, None]:
         """This draw method is different because we also copy the plot options over, so we dont have to do this in figure.py"""

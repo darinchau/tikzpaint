@@ -8,11 +8,7 @@ from tikzpaint.shapes.vector import Vector
 from tikzpaint.shapes.base import L0Path
 
 class Line(Drawable):
-    """Implementation of an line that could be drawn on a figure
-    
-    start: coordinates of the start of a line
-    end: coordinates of the end of a line
-    resolution: the resolution of a line such that if we perform stereographic projections and what nots we can get a curvy line"""
+    """Implementation of a Bezier curve that can be drawn on a figure"""
     def __init__(self, start: Coordinates | Iterable[Number], end: Coordinates | Iterable[Number], resolution: int = 100):
         self.start = Coordinates(start)
         self.end = Coordinates(end)

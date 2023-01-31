@@ -60,7 +60,6 @@ class Figure:
         for d in self.preprocess(kwargs):
             d.plot(ax)
             
-        
         if bound >= 0:
             ax.set_xbound(-bound, bound)
             ax.set_ybound(-bound, bound)

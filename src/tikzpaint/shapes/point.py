@@ -3,7 +3,7 @@ from typing import Generator, Iterable
 from tikzpaint.figures import Drawable, Displayable 
 from tikzpaint.util import Coordinates, copy, Number
 
-from tikzpaint.shapes import L0Point
+from tikzpaint.shapes.base.point import L0Point
 
 class Point(Drawable):
     """Implementation of a point that can be drawn on the figure

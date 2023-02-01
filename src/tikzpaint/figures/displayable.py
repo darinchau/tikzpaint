@@ -1,7 +1,9 @@
+from __future__ import annotations
+
 from abc import ABC
 from abc import abstractmethod as virtual
 import numpy as np
-from typing import Any, ParamSpec, Callable
+from typing import Any, ParamSpec, Callable, Generator
 from tikzpaint.util import Coordinates, copy
 from tikzpaint.figures.options import PlotOptions
 from matplotlib.axes import Axes
@@ -11,7 +13,7 @@ from matplotlib.axes import Axes
 class Displayable:
     """Base class for any object that could be displayed in the figure
     Displayables are the layer 0 interaction between external libraries (such as matplotlib or tikz) and your code
-    Displayables should only draw really really basic stuff such as a line or an arrow or a point"""
+    We have displayables only for basic tikz commands"""
 
     @virtual
     def __init__(self) -> None:
@@ -46,4 +48,10 @@ class Displayable:
     
     @virtual
     def __copy__(self):
+        raise NotImplementedError
+    
+    @virtual
+    def pathify(self) -> Generator[Displayable, None, None]:
+        """This method is designed for non-linear projections. In this method you transform your object into a series of paths and points
+        such that they can be used with non-linear projections."""
         raise NotImplementedError

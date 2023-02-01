@@ -16,10 +16,19 @@ from tikzpaint.shapes.base import L0Path
 
 pi = 3.1415926535
 e = 2.7182818284
-eps = 1e-5
+
+# Turns whatever image you throw at us into a np float64 image with (r, c, 3) shape
+def preprocess(img: NDArray) -> NDArray[np.float64]:
+    if np.issubdtype(img.dtype, np.uint8):
+        img = np.array(img, dtype = np.float64) / 255
+    if len(img.shape) == 2:
+        img = img.reshape(img.shape + (1,)) + np.zeros((1, 1, 3), dtype=np.float64)
+    if img.shape[-1] == 4:
+        img = img[:3]
+    return img
 
 # Returns true if stuff converges
-def Converge(centroids, last):
+def converge(centroids, last):
     really_small_number = 0.01
     dists = np.sqrt(np.sum((centroids - last) ** 2))
     return dists < really_small_number
@@ -41,7 +50,7 @@ def cluster(image: NDArray[np.float64], centroids: NDArray[np.float64]) -> tuple
         categories = np.argmin(dists, axis = 2)
         for i in range(K):
             centroids[i] = np.average(image[categories == i], axis = 0)
-        if Converge(centroids, last):
+        if converge(centroids, last):
             break
 
     return centroids, categories
@@ -102,54 +111,85 @@ def display_segmented_image(image, categories, centroids, K):
     plt.show()
 
 # Get value of pixel with error checking
-def pixel_in(img: NDArray[np.float64], i: int, j: int) -> float:
+def pixval(img: NDArray[np.float64], i: int, j: int) -> float:
     if i >= img.shape[0]:
-        return pixel_in(img, img.shape[0] - 1, j)
+        return pixval(img, img.shape[0] - 1, j)
     if i < 0:
-        return pixel_in(img, 0, j)
+        return pixval(img, 0, j)
     if j >= img.shape[1]:
-        return pixel_in(img, i, img.shape[1] - 1)
+        return pixval(img, i, img.shape[1] - 1)
     if j < 0:
-        return pixel_in(img, i, 0)
+        return pixval(img, i, 0)
     return float(img[i, j, :])
 
 # Value of pixel with linear interpolation
-def value_in(pixels: NDArray[np.float64], x: float, y: float):
+def pixel_value(img: NDArray[np.float64], x: float, y: float):
     j = floor(x - 0.5)
     tj = x - 0.5 - j
     i = floor(y - 0.5)
     ti = y - 0.5 - i
-    interpolated = pixel_in(pixels, i, j) * (1 - ti) * (1 - tj) + pixel_in(pixels, i, j+1) * (1 - ti) * (tj) + pixel_in(pixels, i+1, j+1) * (ti) * (tj) + pixel_in(pixels, i+1, j) * (ti) * (1 - tj)
-    return float(interpolated)
+    upperleft = pixval(img, i, j) * (1 - ti) * (1 - tj)
+    upperright = pixval(img, i, j+1) * (1 - ti) * (tj)
+    lowerleft = pixval(img, i+1, j+1) * (ti) * (tj)
+    lowerright = pixval(img, i+1, j) * (ti) * (1 - tj)
+    interpolated = upperleft + upperright + lowerleft + lowerright
+    return interpolated
 
-def gradient(pixels: NDArray[np.float64], x: float, y: float):
-    newx = (value_in(pixels, x + eps, y) - value_in(pixels, x, y)) / eps
-    newy = (value_in(pixels, x, y + eps) - value_in(pixels, x, y)) / eps
-    return (float(newx), float(newy))
+def gradient(img: NDArray[np.float64], x: float, y: float):
+    EPS = 1e-5
+    newx = (pixel_value(img, x + EPS, y) - pixel_value(img, x, y)) / EPS
+    newy = (pixel_value(img, x, y + EPS) - pixel_value(img, x, y)) / EPS
+    return (newx, newy)
 
 # Distance of point from the contour line
-def gradient_shift(pixels: NDArray[np.float64], threshold, x: float, y: float):
-    gx, gy = gradient(pixels, x, y)
+def shift_dist(img: NDArray[np.float64], threshold, x: float, y: float):
+    gx, gy = gradient(img, x, y)
     g_norm = sqrt(gx * gx + gy * gy)
-    d = threshold - value_in(pixels, x, y)
+    d = threshold - pixel_value(img, x, y)
     return (gx * d / g_norm / g_norm, gy * d / g_norm / g_norm)
 
 # Iterative algorithm to bring a point closer to the contour line
-def fit_point_better(pixels: NDArray[np.float64], threshold: float, point: tuple[float, float]) -> tuple[float, float]:
-    if abs(value_in(pixels, point[0], point[1]) - threshold) < 1/255:
-        return point
-    hx, hy = gradient_shift(pixels, threshold, point[0], point[1])
-    new_point = (point[0] + hx, point[1] + hy)
-    return fit_point_better(pixels, threshold, new_point)
+def fit_point(img: NDArray[np.float64], threshold: float, point: tuple[float, float]) -> tuple[float, float]:
+    while abs(pixel_value(img, point[0], point[1]) - threshold) > 1/255:
+        hx, hy = shift_dist(img, threshold, point[0], point[1])
+        point = (point[0] + hx, point[1] + hy)
+    return point
+
+# Returns a list of all segmented images. K is number of colors
+def mask_images(categories: NDArray[np.int64], K: int):
+    ls = []
+    for i in range(K):
+        masked = np.array(categories, dtype = np.float64)
+        masked[categories != i] = 0.
+        masked[categories == i] = 1.
+        ls.append(masked)
+    return ls
 
 
+# Turns the image into a list of paths plus their fill color category. We actually perform the processing on categories array
+# because thats a bit easier.
+def fit_image(categories: NDArray[np.int64]) -> list[tuple[L0Path, int]]:
+    ls = []
+    r, c = categories.shape
+    for i in range(r - 1):
+        for j in range(c - 1):
+            # We get the following pixels:
+            #
+            # ... current (topleft, tl) |   topright (tr)
+            # ... -----------------------------------------
+            # ...    bottom left (bl)   | bottom right (br)
+            tl = categories[i, j]
+            tr = categories[i, j + 1]
+            bl = categories[i + 1, j]
+            br = categories[i + 1, j + 1]
+    raise NotImplementedError
 
 class Image(Drawable):
     def __init__(self, img_path: str, color_accuracy: int = -1):
         """Implementation of an image that can be drawn in SVG and TeX. Inherently, we can only display so many colors before the code gets ridiculous, So color_accuracy defines the number of colors you want. Default is 5"""
         # Perform the clustering algorithm and store the paths on initialization
         image = mpimg.imread(img_path)
-        image = self.preprocess(image)
+        image = preprocess(image)
         
         # Determine best K and perform clustering
         if color_accuracy < 0:
@@ -157,19 +197,10 @@ class Image(Drawable):
             color_accuracy = determine_best_k(image, downscale = downscale_factor)
         centroids = get_centroid(image, color_accuracy)
         colors, labels = cluster(image, centroids)
-        display_segmented_image(image, labels, colors, color_accuracy)
+        # display_segmented_image(image, labels, colors, color_accuracy)
         
         #
         pass
-    
-    def preprocess(self, img: NDArray) -> NDArray[np.float64]:
-        if np.issubdtype(img.dtype, np.uint8):
-            img = np.array(img, dtype = np.float64) / 255
-        if len(img.shape) == 2:
-            img = img.reshape(img.shape + (1,)) + np.zeros((1, 1, 3), dtype=np.float64)
-        if img.shape[-1] == 4:
-            img = img[:3]
-        return img
 
     def draw(self) -> Generator[Displayable, None, None]:
         return super().draw()

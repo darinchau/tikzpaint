@@ -2,7 +2,7 @@ from tikzpaint.figures import Displayable
 from tikzpaint.util import Coordinates, copy
 import matplotlib.pyplot as plt
 from matplotlib.axes import Axes
-from typing import Any
+from typing import Any, Generator
 
 class L0Point(Displayable):
     """Implementation of a point that could be drawn on a figure"""
@@ -27,3 +27,7 @@ class L0Point(Displayable):
     
     def __copy__(self):
         return L0Point(self.coordinates[""])
+    
+    def pathify(self) -> Generator[Displayable, None, None]:
+        yield self
+        return

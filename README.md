@@ -1,1 +1,2 @@
-This is an utilities app for generating tikz code as effortlessly as possible. Documentation to be added later.
+This is an utilities app for generating tikz code as effortlessly as possible.
+

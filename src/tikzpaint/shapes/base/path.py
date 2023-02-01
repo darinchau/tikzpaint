@@ -2,7 +2,7 @@ from tikzpaint.figures import Displayable
 from tikzpaint.util import Coordinates, copy
 import matplotlib.pyplot as plt
 from matplotlib.axes import Axes
-from typing import Iterable
+from typing import Iterable, Generator
 
 class L0Path(Displayable):
     """Implementation of a path that could be drawn on a figure"""
@@ -23,6 +23,10 @@ class L0Path(Displayable):
             lw = self.options.width,
             alpha = self.options.opacity
         )
+    
+    def pathify(self) -> Generator[Displayable, None, None]:
+        yield self
+        return
 
     def tikzify(self) -> str:
         coords = " -- ".join([str(self.coordinates[i]) for i in range(self.lencoords)])
